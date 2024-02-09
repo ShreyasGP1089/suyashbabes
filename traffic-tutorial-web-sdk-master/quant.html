@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Optimization with TomTom Maps</title>
+    <style>
+        #map {
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Route Optimization with TomTom Maps</h1>
+    <label for="start">Starting Point:</label>
+    <input type="text" id="start" placeholder="Enter starting point">
+
+    <label for="end">Destination:</label>
+    <input type="text" id="end" placeholder="Enter destination">
+
+    <button onclick="optimizeRoute()">Optimize Route</button>
+
+    <div id="map"></div>
+
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.9.0/maps/maps-web.min.js"></script>
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.9.0/services/services-web.min.js"></script>
+
+    <script>
+        var apiKey = "2nlo7xBJoC2UTJ0gPgslS7WE7nCcuVAL";
+        var map;
+        var routeLayer;
+
+        function optimizeRoute() {
+            const startLocation = document.getElementById('start').value;
+            const endLocation = document.getElementById('end').value;
+
+            // Validate input
+            if (!startLocation || !endLocation) {
+                alert("Please enter both starting point and destination.");
+                return;
+            }
+
+            // Use TomTom Routing API for route optimization
+            tt.services.routing({
+                key: apiKey,
+                locations: [startLocation, endLocation],
+                routeType: "fastest",
+                traffic: true
+            })
+            .go()
+            .then(function(response) {
+                // Display the optimized route on the map
+                displayOptimizedRoute(response.routes[0].legs[0].points);
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+
+        function displayOptimizedRoute(points) {
+            // Convert TomTom points to LatLng objects
+            const routeCoordinates = points.map(point => ({ lat: point.latitude, lon: point.longitude }));
+
+            // Initialize the map if not already initialized
+            if (!map) {
+                map = tt.map({
+                    key: apiKey,
+                    container: "map",
+                    style: "tomtom://vector/1/basic-main",
+                    center: routeCoordinates[0],
+                    zoom: 10
+                });
+            }
+
+            // Remove existing route layer if present
+            if (routeLayer) {
+                map.removeLayer(routeLayer);
+            }
+
+            // Add the route layer to the map
+            routeLayer = new tt.Layer({
+                type: "LineString",
+                data: routeCoordinates,
+                color: "#FF0000",
+                width: 4
+            });
+
+            map.addLayer(routeLayer);
+        }
+    </script>
+</body>
+</html>

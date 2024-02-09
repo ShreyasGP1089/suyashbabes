@@ -1,11 +1,12 @@
 var apiKey = "2nlo7xBJoC2UTJ0gPgslS7WE7nCcuVAL";
 var centerCoords = [4.89218, 52.37187];
-var initialZoom = 13;
+var initialZoom = 0;
+var finalzoom=13;
 var map = tt.map({
     key: apiKey,
     container: "map",
     center: centerCoords,
-    zoom: initialZoom
+    //zoom: initialZoom
 });
 
 var searchBoxInstance;
@@ -43,7 +44,8 @@ var trafficFlowTilesTier = new tt.TrafficFlowTilesTier({
 
 var commonSearchBoxOptions = {
     key: apiKey,
-    center: map.getCenter()
+    center: map.getCenter(),
+    zoom:initialZoom
 };
 
 function toggleTrafficFlowTilesTier() {
@@ -88,7 +90,8 @@ function updateSearchBoxOptions() {
 function onSearchBoxResult(result) {
     map.flyTo({
         center: result.data.result.position,
-        speed: 3
+        speed: 3,
+        zoom:finalzoom=13
     });
 }
 

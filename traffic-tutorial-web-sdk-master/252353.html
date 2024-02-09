@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Optimization</title>
+    <style>
+        #map {
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Route Optimization</h1>
+    <label for="start">Starting Point:</label>
+    <input type="text" id="start" placeholder="Enter starting point">
+
+    <label for="end">Destination:</label>
+    <input type="text" id="end" placeholder="Enter destination">
+
+    <button onclick="optimizeRoute()">Optimize Route</button>
+
+    <div id="map"></div>
+
+    <script>
+        function optimizeRoute() {
+            const startLocation = document.getElementById('start').value;
+            const endLocation = document.getElementById('end').value;
+
+            // Validate input
+            if (!startLocation || !endLocation) {
+                alert("Please enter both starting point and destination.");
+                return;
+            }
+
+            // Send request to the backend (hypothetical)
+            const requestPayload = {
+                start: startLocation,
+                end: endLocation,
+            };
+
+            // Assume there's a backend endpoint for route optimization
+            fetch('/api/optimize-route', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestPayload),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the optimized route on the map (hypothetical)
+                displayOptimizedRoute(data.route);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function displayOptimizedRoute(route) {
+            // This is where you would integrate with a mapping library (e.g., Google Maps, Mapbox) to display the route on the map
+            // For simplicity, let's assume there's a function to display the route on the map
+            // Note: You would need to include the appropriate mapping library script in your HTML file
+
+            // Example using Google Maps JavaScript API
+            // Replace YOUR_GOOGLE_MAPS_API_KEY with your actual API key
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 0, lng: 0 },
+                zoom: 8,
+            });
+
+            const routeCoordinates = route.map(point => ({ lat: point.latitude, lng: point.longitude }));
+
+            const routePath = new google.maps.Polyline({
+                path: routeCoordinates,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+            });
+
+            routePath.setMap(map);
+        }
+    </script>
+
+    <!-- Include the Google Maps JavaScript API script -->
+    <script src="2nlo7xBJoC2UTJ0gPgslS7WE7nCcuVAL"></script>
+</body>
+</html>
